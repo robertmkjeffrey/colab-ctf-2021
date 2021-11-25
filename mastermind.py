@@ -37,6 +37,8 @@ def update_consistent(guess, score):
             new_possibilities.add(code)
     possibilities = new_possibilities
 
+# %%
+
 def solve():
 
     if len(possibilities) == len(all_guesses):
@@ -57,7 +59,7 @@ def solve():
             best_guess.append(guess)
     
     if len(set(best_guess).intersection(possibilities)):
-        return list(len(set(best_guess).intersection(possibilities)))[0]
+        return list(set(best_guess).intersection(possibilities))[0]
     else:
         return best_guess[0]
 
