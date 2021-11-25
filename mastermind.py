@@ -34,6 +34,7 @@ def score_guess(guess, code):
             total_count += 1
     return correct_count, (total_count-correct_count)
 
+# Unit test
 assert score_guess((4,4,4,7,8,9), (4,6,6,8,9,9)) == (2,1)
 
 
@@ -79,7 +80,25 @@ def check_guess(guess):
         
     print(score_map)
 
+def stringToTuple(string):
+    return [int(x) for x in string]
+
 # %%
 
-solve()
-# %%
+while True:
+    try:
+        guess = solve()
+    except KeyboardInterrupt:
+        guess = stringToTuple(input("Enter guess instead:"))
+    
+    print(guess)
+
+    correct = int(input("Correct?: "))
+    close = int((input("Close?: ")))
+
+    if correct == 6:
+        print("Poggers!")
+        print("🎉🎉🎉")
+
+    update_consistent(guess, correct, close)
+ 
