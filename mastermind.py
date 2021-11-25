@@ -55,7 +55,11 @@ def solve():
             minmax_remaining = max_remaining
         elif max_remaining == minmax_remaining:
             best_guess.append(guess)
-    return best_guess, minmax_remaining
+    
+    if len(set(best_guess).intersection(possibilities)):
+        return list(len(set(best_guess).intersection(possibilities)))[0]
+    else:
+        return best_guess[0]
 
 # %%
 
