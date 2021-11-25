@@ -6,16 +6,20 @@ digits = range(10)
 all_guesses = list(itertools.combinations_with_replacement(digits, 6))
 possibilities = set(itertools.combinations_with_replacement(digits, 6))
 
+# %%
 def score_guess(guess, code):
     i = 0
     j = 0
-    count = 0
+    correct_count = sum(1 if guess[i] == code[i] else 0 for i in range(len(guess)))
+    
+    total_count = 0
+
     while True:
 
         if i == len(guess):
-            return count
+            break
         if j == len(guess):
-            return count
+            break
 
         a=guess[i]
         b=code[j]
@@ -27,13 +31,18 @@ def score_guess(guess, code):
         elif a == b:
             i += 1
             j += 1
-            count += 1
+            total_count += 1
+    return correct_count, (total_count-correct_count)
 
-def update_consistent(guess, score):
+assert score_guess((4,4,4,7,8,9), (4,6,6,8,9,9)) == (2,1)
+
+
+# %%
+def update_consistent(guess, correct, close):
     global possibilities
     new_possibilities = set()
     for code in possibilities:
-        if score_guess(guess, code) == score:
+        if score_guess(guess, code) == (correct, close):
             new_possibilities.add(code)
     possibilities = new_possibilities
 
@@ -41,8 +50,6 @@ def update_consistent(guess, score):
 
 def solve():
 
-    if len(possibilities) == len(all_guesses):
-        return (0,0,1,1,2,2) # TODO - make general
     best_guess = []
     best_score = 0
     minmax_remaining = len(possibilities)
@@ -75,16 +82,4 @@ def check_guess(guess):
 # %%
 
 solve()
-
-# %%
-while True:
-
-    score = input("Score: ")
-
-    update_consistent(guess, score)
-
-
-
-# %%
-
 # %%
