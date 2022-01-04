@@ -34,3 +34,48 @@ Overall, this was one of the more challenging problem I tackled during the CTF a
 
 ## Patience
 Patience was a challenge released halfway through the competition. The puzzle provided a python script that performed an extremely slow computation ([`patience.py`](patience.py)). Upon seeing this, I immediately noted it as calculating the smallest number not divisible by coprime interegers a and b. This can be calculated directly as $ab-a-b$. Adding this line of code gave the flag almost instantly.
+
+## Union
+Union was the "one that got away". I ended up getting quite close to the final solution; but couldn't spot the closed-form solution for the algorithm I developed. However, I'm quite proud of the work I managed and think I could have reached it had I experimented more.
+
+The Union line started with lineup ([`lineup.py`](lineup.py)). This was a version of the classic white hats - black hats game. There are 100 logicians in a line each with a hat labelled 0-3. The logicians can see all hats in front of them, but not their own. How can they guess their own hat colour?
+
+The solution is a simple modification of the original version: the first logician sums the hat numbers in front of him modulo 4 and guesses this as his hat number. Each logician in front then computes this same sum. By comparing this to the previous calls, they can compute their own hat number. An implementation can be seen in [`lineup.lua`](lineup.lua).
+
+The union problems modified this in a unique way. Now there are 99 logicians and 100 hats labelled, without repetition, 0-99. Importantly, no two logicians can ever call the same hat number. There were three levels; save 49 logicians, save 96, and save 98.
+
+The 49 level was relatively straightforward; the first 49 logicians look at the logician 50 steps ahead of them. They then guess the lowest the hat number above that logician's hat that is also not the hat of one of the last 49 logicians. This avoids repeats while allowing the logicians to figure out the intended hat. An implementation can be seen in [`union.lua`](union.lua).
+
+The 98 level was the next step I approached. As the first logician cannot get his hat consistently right, this essentially means the first logician is the only source of information that must allow all remaining logicians to guess the right hat. This strictness has a benefit however; as all 98 logicians must get their hats correct, we can essentially treat it all all 98 logicians being able to see each other's hats. We then need to figure out how to provide a single call, from the two possible hats not present on those 98, that uniquely determines the sequence.
+
+I started from small hat counts to try and find an algorithm. We can represent this as finding a function that maps a list to a single number; the hat the first logician calls out. We'll call this function f(x1, x2, ..., xn). 
+
+For a mapping to work, each logician must be able to uniquely identify their hat based on all other logicians' hats in addition to the "revealled" hat. Formally, the function g(y) = f(x1, x2, ..., y, ... xn) must be injective for fixed x1 ... xn.
+
+In small hat counts, we can use this to manually define the mapping. For four logicians and four hats, we need to save 2. Defining the mapping as follows:
+
+f(0, 1) = 3
+
+f(0, 2) = 1
+
+f(0, 3) = 2
+
+f(1, 0) = 2
+
+f(1, 2) = 3
+
+f(1, 3) = 0
+
+f(2, 0) = 3
+
+f(2, 1) = 0
+
+f(2, 3) = 1
+
+f(3, 0) = 1
+
+f(3, 1) = 2
+
+f(3, 2) = 0
+
+satisfies this property. This property allows us to generate the entire mapping off one single decision, and thus would have let us solve the problem. Unfortunately I wasn't competent enough in Lua to solve it within the time frame. 
